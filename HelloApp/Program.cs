@@ -9,13 +9,20 @@ WebApplication app = builder.Build();
 // });
 
 // Setting Headers
+// app.Run(async (context) =>
+// {
+//     var response = context.Response;
+//     response.Headers.ContentLanguage = "ru-RU";
+//     response.Headers.ContentType = "text/plain; charset=utf-8";
+//     response.Headers.Append("secret-id", "256");
+//     await response.WriteAsync("Привет мир!");
+// });
+
+// Setting status code
 app.Run(async (context) =>
 {
-    var response = context.Response;
-    response.Headers.ContentLanguage = "ru-RU";
-    response.Headers.ContentType = "text/plain; charset=utf-8";
-    response.Headers.Append("secret-id", "256");
-    await response.WriteAsync("Привет мир!");
+    context.Response.StatusCode = 404;
+    await context.Response.WriteAsync("Resource not found!");
 });
 
 app.Run();

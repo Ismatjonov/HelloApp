@@ -19,10 +19,16 @@ WebApplication app = builder.Build();
 // });
 
 // Setting status code
+// app.Run(async (context) =>
+// {
+//     context.Response.StatusCode = 404;
+//     await context.Response.WriteAsync("Resource not found!");
+// });
+
 app.Run(async (context) =>
 {
-    context.Response.StatusCode = 404;
-    await context.Response.WriteAsync("Resource not found!");
+    context.Response.Headers.ContentType = "text/html";
+    await context.Response.WriteAsync("<h2>Hello World!</h2><h3>Welcome to ASP.NET Core</h3>");
 });
 
 app.Run();

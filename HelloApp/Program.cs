@@ -3,6 +3,11 @@ WebApplication app = builder.Build();
 
 app.MapGet("/", () => "Hello World!");
 
-app.UseWelcomePage();
-
+app.Run(HandleRequest);
 app.Run();
+
+// writing middleware in separated method
+async Task HandleRequest(HttpContext context)
+{
+    await context.Response.WriteAsync("Hello Bakhtovar!!");
+}

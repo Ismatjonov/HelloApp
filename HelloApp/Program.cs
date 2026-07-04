@@ -3,8 +3,6 @@ WebApplication app = builder.Build();
 
 app.MapGet("/", () => "Hello World!");
 
-app.Run();
+app.UseWelcomePage();
 
-await app.StartAsync();
-await Task.Delay(10000);
-await app.StopAsync();
+app.Run();

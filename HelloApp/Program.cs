@@ -32,10 +32,10 @@ WebApplication app = builder.Build();
 });*/
 
 // ========== HttpRequest. Getting request data ==========
-app.Run(async(context) =>
+/*app.Run(async(context) =>
 {
     context.Response.ContentType = "text/html; charset=utf-8";
-    var stringBuilder = new System.Text.StringBuilder("<table>");
+    var stringBuilder = new System.Text.StringBuilder("<table border='1' cellspacing='1' cellpadding='1'>");
 
     foreach (var header in context.Request.Headers)
     {
@@ -43,6 +43,12 @@ app.Run(async(context) =>
     }
     stringBuilder.Append("</table>");
     await context.Response.WriteAsync(stringBuilder.ToString());
+});*/
+
+app.Run(async (context) =>
+{
+    var acceptHeaderValue = context.Request.Headers.Accept;
+    await context.Response.WriteAsync($"Accept: {acceptHeaderValue}~");
 });
 
 app.Run();

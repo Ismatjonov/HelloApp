@@ -54,7 +54,7 @@ WebApplication app = builder.Build();
 // ---- Getting a path of request ----
 // app.Run(async context => await context.Response.WriteAsync($"Path: {context.Request.Path}"));
 
-app.Run(async (context) =>
+/*app.Run(async (context) =>
 {
     var path = context.Request.Path;
     var now = DateTime.Now;
@@ -66,6 +66,14 @@ app.Run(async (context) =>
         await response.WriteAsync(now.ToLongTimeString());
     else
         await response.WriteAsync("Hello METANIT.COM");
+});*/
+
+// ---- Query string ----
+app.Run(async context =>
+{
+    context.Response.ContentType = "text/html charset=utf-8";
+    await context.Response.WriteAsync($"<p>Path: {context.Request.Path}</p>" +
+                                      $"<p>QueryString: {context.Request.QueryString}</p>");
 });
 
 app.Run();

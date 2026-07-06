@@ -69,11 +69,25 @@ WebApplication app = builder.Build();
 });*/
 
 // ---- Query string ----
-app.Run(async context =>
+/*app.Run(async context =>
 {
     context.Response.ContentType = "text/html charset=utf-8";
     await context.Response.WriteAsync($"<p>Path: {context.Request.Path}</p>" +
                                       $"<p>QueryString: {context.Request.QueryString}</p>");
+});*/
+
+// params of query string
+app.Run(async context =>
+{
+    context.Response.ContentType = "text/html charset=utf-8";
+    var stringBuilder = new System.Text.StringBuilder("<h3>Parameters of Query String</h3><table border='1'>");
+    stringBuilder.Append("<tr><td>Parameter</td><td>Value</td></tr>");
+    foreach (var param in context.Request.Query)
+    {
+        stringBuilder.Append($"<tr><td>{param.Key}</td><td>{param.Value}</td></tr>");
+    }
+    stringBuilder.Append("</table>");
+    await context.Response.WriteAsync(stringBuilder.ToString());
 });
 
 app.Run();

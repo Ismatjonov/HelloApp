@@ -77,7 +77,7 @@ WebApplication app = builder.Build();
 });*/
 
 // params of query string
-app.Run(async context =>
+/*app.Run(async context =>
 {
     context.Response.ContentType = "text/html charset=utf-8";
     var stringBuilder = new System.Text.StringBuilder("<h3>Parameters of Query String</h3><table border='1'>");
@@ -88,6 +88,13 @@ app.Run(async context =>
     }
     stringBuilder.Append("</table>");
     await context.Response.WriteAsync(stringBuilder.ToString());
+});*/
+
+app.Run(async context =>
+{
+    string name = context.Request.Query["name"];
+    string age = context.Request.Query["age"];
+    await context.Response.WriteAsync($"{name} - {age}");
 });
 
 app.Run();

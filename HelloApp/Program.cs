@@ -25,10 +25,24 @@ WebApplication app = builder.Build();
 //     await context.Response.WriteAsync("Resource not found!");
 // });
 
-app.Run(async (context) =>
+/*app.Run(async (context) =>
 {
     context.Response.Headers.ContentType = "text/html";
     await context.Response.WriteAsync("<h2>Hello World!</h2><h3>Welcome to ASP.NET Core</h3>");
+});*/
+
+// ========== HttpRequest. Getting request data ==========
+app.Run(async(context) =>
+{
+    context.Response.ContentType = "text/html; charset=utf-8";
+    var stringBuilder = new System.Text.StringBuilder("<table>");
+
+    foreach (var header in context.Request.Headers)
+    {
+        stringBuilder.Append($"<tr><td>{header.Key}</td><td>{header.Value}</td></tr>");
+    }
+    stringBuilder.Append("</table>");
+    await context.Response.WriteAsync(stringBuilder.ToString());
 });
 
 app.Run();

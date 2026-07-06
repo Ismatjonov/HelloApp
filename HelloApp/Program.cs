@@ -45,10 +45,27 @@ WebApplication app = builder.Build();
     await context.Response.WriteAsync(stringBuilder.ToString());
 });*/
 
-app.Run(async (context) =>
+/*app.Run(async (context) =>
 {
     var acceptHeaderValue = context.Request.Headers.Accept;
-    await context.Response.WriteAsync($"Accept: {acceptHeaderValue}~");
+    await context.Response.WriteAsync($"Accept: {acceptHeaderValue}");
+});*/
+
+// ---- Getting a path of request ----
+// app.Run(async context => await context.Response.WriteAsync($"Path: {context.Request.Path}"));
+
+app.Run(async (context) =>
+{
+    var path = context.Request.Path;
+    var now = DateTime.Now;
+    var response = context.Response;
+    
+    if(path == "/date")
+        await response.WriteAsync(now.ToShortDateString());
+    else if (path == "/time")
+        await response.WriteAsync(now.ToLongTimeString());
+    else
+        await response.WriteAsync("Hello METANIT.COM");
 });
 
 app.Run();

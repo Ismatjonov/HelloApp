@@ -90,11 +90,19 @@ WebApplication app = builder.Build();
     await context.Response.WriteAsync(stringBuilder.ToString());
 });*/
 
-app.Run(async context =>
+/*app.Run(async context =>
 {
     string name = context.Request.Query["name"];
     string age = context.Request.Query["age"];
     await context.Response.WriteAsync($"{name} - {age}");
+});*/
+
+
+// ========== Sending files ==========
+
+app.Run(async context =>
+{
+    await context.Response.SendFileAsync("cat.jpg");
 });
 
 app.Run();

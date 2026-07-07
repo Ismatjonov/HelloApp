@@ -152,7 +152,7 @@ WebApplication app = builder.Build();
 
 
 // ========== Sending forms ==========
-app.Run(async context =>
+/*app.Run(async context =>
 {
     context.Response.ContentType = "text/html charset=utf-8";
 
@@ -162,6 +162,33 @@ app.Run(async context =>
         string name = form["name"];
         int age = int.Parse(form["age"]);
         await context.Response.WriteAsync($"<div><p>Name: {name}</p><p>Age: {age}</p></div>");
+    }
+    else
+    {
+        await context.Response.SendFileAsync("html/index.html");
+    }
+});*/
+
+// ----- Getting arrays -----
+app.Run(async context =>
+{
+    context.Response.ContentType = "text/html charset=utf-8";
+
+    if (context.Request.Path == "/postuser")
+    {
+        string name = context.Request.Form["name"];
+        string age = context.Request.Form["age"];
+        string[] languages = context.Request.Form["languages"];
+        // creating a string from arrray
+        string langList = "";
+        foreach (string lang in languages)
+        {
+            langList += $" {lang}";
+        }
+
+        await context.Response.WriteAsync($"<div><p>Name: {name}</p></div>" +
+                                          $"<p>Age: {age}</p>" +
+                                          $"<p>Languages: {langList}</p>");
     }
     else
     {

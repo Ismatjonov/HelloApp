@@ -100,9 +100,16 @@ WebApplication app = builder.Build();
 
 // ========== Sending files ==========
 
-app.Run(async context =>
+/*app.Run(async context =>
 {
     await context.Response.SendFileAsync("cat.jpg");
+});*/
+
+// ---- sending html-files ----
+app.Run(async context =>
+{
+    context.Response.ContentType = "text/html charset=utf-8";
+    await context.Response.SendFileAsync("html/index.html");
 });
 
 app.Run();

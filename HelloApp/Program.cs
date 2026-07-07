@@ -113,7 +113,7 @@ WebApplication app = builder.Build();
 });*/
 
 // ---- complex tasks ----
-app.Run(async context =>
+/*app.Run(async context =>
 {
     var path = context.Request.Path;
     var fullPath = $"html/{path}";
@@ -129,6 +129,13 @@ app.Run(async context =>
         response.StatusCode = 404;
         await response.WriteAsync("<h2>Not Found!</h2>");
     }
+});*/
+
+// ---- Downloading files -----
+app.Run(async context =>
+{
+    context.Response.Headers.ContentDisposition = "attachment; filename=my_cat.jpg";
+    await context.Response.SendFileAsync("cat.jpg");
 });
 
 app.Run();

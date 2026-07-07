@@ -1,3 +1,5 @@
+using Microsoft.Extensions.FileProviders;
+
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 WebApplication app = builder.Build();
 
@@ -132,10 +134,20 @@ WebApplication app = builder.Build();
 });*/
 
 // ---- Downloading files -----
-app.Run(async context =>
+/*app.Run(async context =>
 {
     context.Response.Headers.ContentDisposition = "attachment; filename=my_cat.jpg";
     await context.Response.SendFileAsync("cat.jpg");
+});*/
+
+// ----- IFileInfo -----
+app.Run(async context =>
+{
+    var fileProvider = new PhysicalFileProvider(Directory.GetCurrentDirectory());
+    var fileInfo = fileProvider.GetFileInfo("cat.jpg");
+    
+    context.Response.Headers.ContentDisposition = "attachment; filename=cat2.jpg";
+    await context.Response.SendFileAsync(fileInfo);
 });
 
 app.Run();

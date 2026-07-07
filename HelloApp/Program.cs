@@ -141,13 +141,32 @@ WebApplication app = builder.Build();
 });*/
 
 // ----- IFileInfo -----
-app.Run(async context =>
+/*app.Run(async context =>
 {
     var fileProvider = new PhysicalFileProvider(Directory.GetCurrentDirectory());
     var fileInfo = fileProvider.GetFileInfo("cat.jpg");
     
     context.Response.Headers.ContentDisposition = "attachment; filename=cat2.jpg";
     await context.Response.SendFileAsync(fileInfo);
+});*/
+
+
+// ========== Sending forms ==========
+app.Run(async context =>
+{
+    context.Response.ContentType = "text/html charset=utf-8";
+
+    if (context.Request.Path == "/postuser")
+    {
+        var form = context.Request.Form;
+        string name = form["name"];
+        int age = int.Parse(form["age"]);
+        await context.Response.WriteAsync($"<div><p>Name: {name}</p><p>Age: {age}</p></div>");
+    }
+    else
+    {
+        await context.Response.SendFileAsync("html/index.html");
+    }
 });
 
 app.Run();

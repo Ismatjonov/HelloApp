@@ -106,10 +106,29 @@ WebApplication app = builder.Build();
 });*/
 
 // ---- sending html-files ----
-app.Run(async context =>
+/*app.Run(async context =>
 {
     context.Response.ContentType = "text/html charset=utf-8";
     await context.Response.SendFileAsync("html/index.html");
+});*/
+
+// ---- complex tasks ----
+app.Run(async context =>
+{
+    var path = context.Request.Path;
+    var fullPath = $"html/{path}";
+    var response = context.Response;
+    
+    response.ContentType = "text/html charset=utf-8";
+    if (File.Exists(fullPath))
+    {
+        response.SendFileAsync(fullPath);
+    }
+    else
+    {
+        response.StatusCode = 404;
+        await response.WriteAsync("<h2>Not Found!</h2>");
+    }
 });
 
 app.Run();

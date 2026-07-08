@@ -1,3 +1,5 @@
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using Microsoft.Extensions.FileProviders;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
@@ -225,11 +227,11 @@ WebApplication app = builder.Build();
 });*/
 
 // ---- getting JSON -----
-app.Run(async (context) =>
+/*app.Run(async (context) =>
 {
     var response = context.Response;
     var request = context.Request;
-    if (request.Path == "/api/user")
+    if (request.HasJsonContentType())
     {
         var message = "Некорректные данные";   // default content
         try
@@ -248,8 +250,86 @@ app.Run(async (context) =>
         response.ContentType = "text/html; charset=utf-8";
         await response.SendFileAsync("html/index.html");
     }
+});*/
+
+// ----- Setting serialization -----
+app.Run(async context =>
+{
+    var response = context.Response;
+    var request = context.Request;
+    if (request.Path == "/common.js")
+    {
+        response.ContentType = "application/javascript";
+        await response.SendFileAsync("html/common.js");
+    }
+    else if (request.Path == "/api/user")
+    {
+        var responseText = "Incorrect data";
+
+        if (request.HasJsonContentType())
+        {
+            var jsonOption = new JsonSerializerOptions();
+            jsonOption.Converters.Add(new PersonConverter());
+            var person = await request.ReadFromJsonAsync<Person>(jsonOption);
+            if (person != null)
+                responseText = $"Name: {person.Name}, Age: {person.Age}";
+        }
+
+        await response.WriteAsJsonAsync(new { text = responseText });
+    }
+    else
+    {
+        response.ContentType = "text/html; charset=utf-8";
+        await response.SendFileAsync("html/index.html");
+    }
 });
 
 app.Run();
 
 public record class Person(string Name, int Age);
+
+public class PersonConverter : JsonConverter<Person>
+{
+    public override Person Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    {
+        var personName = "Undefined";
+        var personAge = 0;
+        while (reader.Read())
+        {
+            if (reader.TokenType == JsonTokenType.PropertyName)
+            {
+                var propertyName = reader.GetString();
+                reader.Read();
+                switch (propertyName?.ToLower())
+                {
+                    // if property age and contains int
+                    case "age" when reader.TokenType == JsonTokenType.Number:
+                        personAge = reader.GetInt32();  // reading number from JSON
+                        break;
+                    case "age" when reader.TokenType == JsonTokenType.String:
+                        string? stringValue = reader.GetString();
+                        // trying to convert string to number
+                        if (int.TryParse(stringValue, out int value))
+                        {
+                            personAge = value;
+                        }
+                        break;
+                    case "name":
+                        string? name = reader.GetString();
+                        if (name != null) personName = name;
+                        break;
+                }
+            }
+        }
+        return new Person(personName, personAge);
+    }
+
+    public override void Write(Utf8JsonWriter writer, Person person, JsonSerializerOptions options)
+    {
+        writer.WriteStartObject();
+        writer.WriteString("name", person.Name);
+        writer.WriteNumber("age", person.Age);
+        
+        writer.WriteEndObject();
+    }
+}

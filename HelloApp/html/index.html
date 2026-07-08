@@ -1,28 +1,35 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8" />
     <title>METANIT.COM</title>
 </head>
 <body>
-    <h2>User form</h2>
-    <form method="post" action="postuser">
-        <p>Name: <br>
-            <input type="text" name="name">
-        </p>
-        <p>Age: <br>
-            <input type="number" name="age">
-        </p>
-        <p>
-            Languages: <br>
-            <select multiple name="languages">
-                <option>C#</option>
-                <option>JavaScript</option>
-                <option>Kotlin</option>
-                <option>Java</option>
-            </select>
-        </p>
-        <button>Send</button>
-    </form>
+<h2>User form</h2>
+<div id="message"></div>
+<div>
+    <p>Name: <br />
+        <input name="userName" id="userName" />
+    </p>
+    <p>Age: <br />
+        <input name="userAge" id="userAge" type="number" />
+    </p>
+    <button id="sendBtn">Send</button>
+</div>
+<script>
+    document.getElementById("sendBtn").addEventListener("click", send);
+    async function send() {
+        const response = await fetch("/api/user", {
+            method: "POST",
+            headers: { "Accept": "application/json", "Content-Type": "application/json" },
+            body: JSON.stringify({
+                name: document.getElementById("userName").value,
+                age: document.getElementById("userAge").value
+            })
+        });
+        const message = await response.json();
+        document.getElementById("message").innerText = message.text;
+    }
+</script>
 </body>
 </html>

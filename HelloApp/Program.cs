@@ -216,12 +216,40 @@ WebApplication app = builder.Build();
 
 
 // ==================== Getting and Setting JSON ====================
-app.Run(async context =>
+
+// ---- sending JSON ---- 
+/*app.Run(async context =>
 {
     Person person = new("Tom", 22);
     await context.Response.WriteAsJsonAsync(person);
+});*/
+
+// ---- getting JSON -----
+app.Run(async (context) =>
+{
+    var response = context.Response;
+    var request = context.Request;
+    if (request.Path == "/api/user")
+    {
+        var message = "Некорректные данные";   // default content
+        try
+        {
+            // trying to het get json data
+            var person = await request.ReadFromJsonAsync<Person>();
+            if (person != null) // if data converted to the JSON
+                message = $"Name: {person.Name},  Age: {person.Age}";
+        }
+        catch { }
+        // sending data to user
+        await response.WriteAsJsonAsync(new { text = message });
+    }
+    else
+    {
+        response.ContentType = "text/html; charset=utf-8";
+        await response.SendFileAsync("html/index.html");
+    }
 });
 
 app.Run();
 
-public record class Person(string name, int age);
+public record class Person(string Name, int Age);

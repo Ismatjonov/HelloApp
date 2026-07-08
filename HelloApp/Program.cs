@@ -198,7 +198,7 @@ WebApplication app = builder.Build();
 
 
 // ==================== Redirect ====================
-app.Run(async context =>
+/*app.Run(async context =>
 {
     if (context.Request.Path == "/old")
     {
@@ -212,6 +212,16 @@ app.Run(async context =>
     {
         await context.Response.WriteAsync("Main Page");
     }
+});*/
+
+
+// ==================== Getting and Setting JSON ====================
+app.Run(async context =>
+{
+    Person person = new("Tom", 22);
+    await context.Response.WriteAsJsonAsync(person);
 });
 
 app.Run();
+
+public record class Person(string name, int age);

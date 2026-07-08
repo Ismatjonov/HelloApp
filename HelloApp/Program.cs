@@ -170,7 +170,7 @@ WebApplication app = builder.Build();
 });*/
 
 // ----- Getting arrays -----
-app.Run(async context =>
+/*app.Run(async context =>
 {
     context.Response.ContentType = "text/html charset=utf-8";
 
@@ -193,6 +193,24 @@ app.Run(async context =>
     else
     {
         await context.Response.SendFileAsync("html/index.html");
+    }
+});*/
+
+
+// ==================== Redirect ====================
+app.Run(async context =>
+{
+    if (context.Request.Path == "/old")
+    {
+        context.Response.Redirect("https://www.google.com/search?q=metanit.com");
+    }
+    else if (context.Request.Path == "/new")
+    {
+        await context.Response.WriteAsync("New Page");
+    }
+    else
+    {
+        await context.Response.WriteAsync("Main Page");
     }
 });
 

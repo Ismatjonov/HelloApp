@@ -365,7 +365,7 @@ WebApplication app = builder.Build();
 });*/
 
 // ===================== Method Use() =====================
-string date = "";
+/*string date = "";
 app.Use(async (context, next) =>
 {
     date = DateTime.Now.ToShortDateString();
@@ -373,7 +373,19 @@ app.Use(async (context, next) =>
     Console.WriteLine($"Current date: {date}");
 });
 
-app.Run(async context => await context.Response.WriteAsync($"Date: {date}"));
+app.Run(async context => await context.Response.WriteAsync($"Date: {date}"));*/
+
+app.Use(async (context, next) =>
+{
+    await context.Response.WriteAsync("<p>Hello World!</p>");
+    await next.Invoke();
+});
+
+app.Run(async context =>
+{
+    await Task.Delay(5000);
+    await context.Response.WriteAsync("<p>Good Bye, World...</p>");
+});
 
 app.Run();
  

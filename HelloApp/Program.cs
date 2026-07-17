@@ -366,10 +366,16 @@ WebApplication app = builder.Build();
 
 // ===================== Method Use() =====================
 string date = "";
-app.Use(async (ContextCallback, next) =>
+app.Use(async (context, next) =>
 {
+    date = DateTime.Now.ToShortDateString();
     await next.Invoke();
+    Console.WriteLine($"Current date: {date}");
 });
+
+app.Run(async context => await context.Response.WriteAsync($"Date: {date}"));
+
+app.Run();
  
 
 

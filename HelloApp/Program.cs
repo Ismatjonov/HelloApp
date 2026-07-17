@@ -336,7 +336,7 @@ WebApplication app = builder.Build();
 
 
 // ========== Uploading files to the server ==========
-app.Run(async context =>
+/*app.Run(async context =>
 {
     var response = context.Response;
     var request = context.Request;
@@ -356,17 +356,26 @@ app.Run(async context =>
                 await file.CopyToAsync(fileStream);
             }
         }
-        await response.WriteAsync("File added successfully!");
+        await response.WriteAsync("Files uploaded!");
     }
     else
     {
         await response.SendFileAsync("html/index.html");
     }
-});
+});*/
 
+// ===================== Method Use() =====================
+string date = "";
+app.Use(async (ContextCallback, next) =>
+{
+    await next.Invoke();
+});
  
-app.Run();
- 
+
+
+
+// = = = = = = = = = = METHODS = = = = = = = = = =
+
 /*// получение всех пользователей
 async Task GetAllPeople(HttpResponse response)
 {

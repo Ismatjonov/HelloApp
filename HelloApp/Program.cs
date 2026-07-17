@@ -287,14 +287,14 @@ WebApplication app = builder.Build();
 
 
 // =============== CREATING AN SIMPLE API ===============
-List<Person> users = new List<Person> 
+/*List<Person> users = new List<Person> 
 { 
     new() { Id = Guid.NewGuid().ToString(), Name = "Tom", Age = 37 },
     new() { Id = Guid.NewGuid().ToString(), Name = "Bob", Age = 41 },
     new() { Id = Guid.NewGuid().ToString(), Name = "Sam", Age = 24 }
-};
+};*/
  
-app.Run(async (context) =>
+/*app.Run(async (context) =>
 {
     var response = context.Response;
     var request = context.Request;
@@ -331,11 +331,43 @@ app.Run(async (context) =>
         response.ContentType = "text/html; charset=utf-8";
         await response.SendFileAsync("html/index.html");
     }
+});*/
+
+
+
+// ========== Uploading files to the server ==========
+app.Run(async context =>
+{
+    var response = context.Response;
+    var request = context.Request;
+    
+    response.ContentType = "text/html; charset=utf-8";
+
+    if (request.Path == "/upload" && request.Method == "POST")
+    {
+        IFormFileCollection files = request.Form.Files;
+        var uploadPath = $"{Directory.GetCurrentDirectory()}/upload";
+        Directory.CreateDirectory(uploadPath);
+        foreach(var file in files)
+        {
+            string fullPath = $"{uploadPath}/{file.FileName}";
+            using (var fileStream = new FileStream(fullPath, FileMode.Create))
+            {
+                await file.CopyToAsync(fileStream);
+            }
+        }
+        await response.WriteAsync("File added successfully!");
+    }
+    else
+    {
+        await response.SendFileAsync("html/index.html");
+    }
 });
+
  
 app.Run();
  
-// получение всех пользователей
+/*// получение всех пользователей
 async Task GetAllPeople(HttpResponse response)
 {
     await response.WriteAsJsonAsync(users);
@@ -433,7 +465,7 @@ async Task UpdatePerson(HttpResponse response, HttpRequest request)
         response.StatusCode = 400;
         await response.WriteAsJsonAsync(new { message = "Некорректные данные" });
     }
-}
+}*/
 
 // = = = = = = CLASSES = = = = = = 
 

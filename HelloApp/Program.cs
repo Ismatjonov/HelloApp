@@ -375,7 +375,7 @@ app.Use(async (context, next) =>
 
 app.Run(async context => await context.Response.WriteAsync($"Date: {date}"));*/
 
-app.Use(async (context, next) =>
+/*app.Use(async (context, next) =>
 {
     await context.Response.WriteAsync("<p>Hello World!</p>");
     await next.Invoke();
@@ -387,8 +387,26 @@ app.Run(async context =>
     await context.Response.WriteAsync("<p>Good Bye, World...</p>");
 });
 
-app.Run();
+app.Run();*/
+
+app.Use(async (context, next) =>
+{
+    Console.WriteLine("First start");
+    await next();
+    Console.WriteLine("First end");
+});
+app.Use(async (context, next) =>
+{
+    Console.WriteLine("Second start");
+    await next();
+    Console.WriteLine("Second end");
+});
+app.Run(async context =>
+{
+    Console.WriteLine("Run");
+});
  
+
 
 
 

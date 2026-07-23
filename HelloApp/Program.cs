@@ -467,7 +467,7 @@ async Task GetDate(HttpContext context, Func<Task> next)
 
 
 // ================ Creating a pipeline branch. UseWhen and MapWhen ================
-app.UseWhen(
+/*app.UseWhen(
     context => context.Request.Path == "/time",
     appBuilder =>
     {
@@ -484,6 +484,23 @@ app.UseWhen(
         });
     });
 app.Run(async context => await context.Response.WriteAsync("Hello World!"));
+app.Run();*/
+
+app.UseWhen(
+    context => context.Request.Path == "/time",
+    appBuilder =>
+    {
+        appBuilder.Use(async (context, next) =>
+        {
+            var time = DateTime.Now.ToShortTimeString();
+            Console.WriteLine($"Time: {time}");
+            await next();
+        });
+    });
+app.Run(async context =>
+{
+    await context.Response.WriteAsync("Hello World!");
+});
 app.Run();
 
 

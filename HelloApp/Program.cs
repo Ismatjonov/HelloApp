@@ -449,7 +449,7 @@ app.Run();*/
 app.Run();*/
 
 // ------- Extracting components into methods --------
-app.Use(GetDate);
+/*app.Use(GetDate);
 app.Run(async context => await context.Response.WriteAsync("Hello World!"));
 app.Run();
 async Task GetDate(HttpContext context, Func<Task> next)
@@ -463,8 +463,28 @@ async Task GetDate(HttpContext context, Func<Task> next)
     {
         await next.Invoke();
     }
-}
+}*/
 
+
+// ================ Creating a pipeline branch. UseWhen and MapWhen ================
+app.UseWhen(
+    context => context.Request.Path == "/time",
+    appBuilder =>
+    {
+        appBuilder.Use(async (context, next) =>
+        {
+            var time = DateTime.Now.ToShortTimeString();
+            Console.WriteLine($"Time: {time}");
+            await next();
+        });
+        appBuilder.Run(async context =>
+        {
+            var time = DateTime.Now.ToShortTimeString();
+            await context.Response.WriteAsync($"Time: {time}");
+        });
+    });
+app.Run(async context => await context.Response.WriteAsync("Hello World!"));
+app.Run();
 
 
 // = = = = = = = = = = METHODS = = = = = = = = = =

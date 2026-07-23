@@ -424,7 +424,7 @@ app.Run(async context => await context.Response.WriteAsync($"Date: {date}"));
 app.Run();*/
 
 // ------ Terminal middleware component ------
-app.Use(async (context, next) =>
+/*app.Use(async (context, next) =>
 {
     string? path = context.Request.Path.Value?.ToLower();
     if (path == "/date")
@@ -439,8 +439,14 @@ app.Use(async (context, next) =>
 
 app.Run(async context => await context.Response.WriteAsync("Hello World!"));
 
-app.Run();
+app.Run();*/
 
+// ------ Use as a terminal middleware -----
+app.Use(async (HttpContext context, Func<Task> next) =>
+{
+    await context.Response.WriteAsync("Hello World!");
+});
+app.Run();
 
 
 

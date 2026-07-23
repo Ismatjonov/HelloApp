@@ -486,7 +486,7 @@ async Task GetDate(HttpContext context, Func<Task> next)
 app.Run(async context => await context.Response.WriteAsync("Hello World!"));
 app.Run();*/
 
-app.UseWhen(
+/*app.UseWhen(
     context => context.Request.Path == "/time",
     appBuilder =>
     {
@@ -501,8 +501,25 @@ app.Run(async context =>
 {
     await context.Response.WriteAsync("Hello World!");
 });
-app.Run();
+app.Run();*/
 
+/// <summary>
+/// ========== Extracting into methods ==========
+/// </summary>
+app.UseWhen(
+    context => context.Request.Path == "/time",
+    HadleTimerequest);
+app.Run(async context => await context.Response.WriteAsync("Hello World!"));
+app.Run();
+void HadleTimerequest(IApplicationBuilder appBuilder)
+{
+    appBuilder.Use(async (context, next) =>
+    {
+        var time = DateTime.Now.ToString("HH:mm:ss");
+        Console.WriteLine($"Time: {time}");
+        await next();
+    });
+}
 
 // = = = = = = = = = = METHODS = = = = = = = = = =
 

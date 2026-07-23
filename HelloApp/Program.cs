@@ -503,10 +503,8 @@ app.Run(async context =>
 });
 app.Run();*/
 
-/// <summary>
-/// ========== Extracting into methods ==========
-/// </summary>
-app.UseWhen(
+/// ==================== Extracting into methods ====================
+/*app.UseWhen(
     context => context.Request.Path == "/time",
     HadleTimerequest);
 app.Run(async context => await context.Response.WriteAsync("Hello World!"));
@@ -519,7 +517,19 @@ void HadleTimerequest(IApplicationBuilder appBuilder)
         Console.WriteLine($"Time: {time}");
         await next();
     });
-}
+}*/
+
+// ==================== MapWhen ====================
+app.MapWhen(
+    context => context.Request.Path == "/time",
+    appBuilder => appBuilder.Run(async context =>
+    {
+        var time = DateTime.Now.ToShortTimeString();
+        await context.Response.WriteAsync($"Time: {time}");
+    })
+);
+app.Run(async context => await context.Response.WriteAsync("Hello World!"));
+app.Run();
 
 // = = = = = = = = = = METHODS = = = = = = = = = =
 

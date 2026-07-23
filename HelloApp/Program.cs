@@ -410,7 +410,7 @@ app.Run(async context =>
 });*/
  
 // -------- Using delegate RequestDelegate -----
-string date = "";
+/*string date = "";
 
 app.Use(async (context, next) =>
 {
@@ -420,6 +420,24 @@ app.Use(async (context, next) =>
 });
 
 app.Run(async context => await context.Response.WriteAsync($"Date: {date}"));
+
+app.Run();*/
+
+// ------ Terminal middleware component ------
+app.Use(async (context, next) =>
+{
+    string? path = context.Request.Path.Value?.ToLower();
+    if (path == "/date")
+    {
+        await context.Response.WriteAsync($"Date: {DateTime.Now.ToShortDateString()}");
+    }
+    else
+    {
+        await next.Invoke();
+    }
+});
+
+app.Run(async context => await context.Response.WriteAsync("Hello World!"));
 
 app.Run();
 

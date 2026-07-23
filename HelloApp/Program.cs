@@ -442,11 +442,28 @@ app.Run(async context => await context.Response.WriteAsync("Hello World!"));
 app.Run();*/
 
 // ------ Use as a terminal middleware -----
-app.Use(async (HttpContext context, Func<Task> next) =>
+/*app.Use(async (HttpContext context, Func<Task> next) =>
 {
     await context.Response.WriteAsync("Hello World!");
 });
+app.Run();*/
+
+// ------- Extracting components into methods --------
+app.Use(GetDate);
+app.Run(async context => await context.Response.WriteAsync("Hello World!"));
 app.Run();
+async Task GetDate(HttpContext context, Func<Task> next)
+{
+    string? path = context.Request.Path.Value?.ToLower();
+    if (path == "/date")
+    {
+        await context.Response.WriteAsync($"Date: {DateTime.Now.ToShortDateString()}");
+    }
+    else
+    {
+        await next.Invoke();
+    }
+}
 
 
 

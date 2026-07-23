@@ -368,12 +368,15 @@ WebApplication app = builder.Build();
 /*string date = "";
 app.Use(async (context, next) =>
 {
+    Console.WriteLine($"Request: {context.Request.Path}");
     date = DateTime.Now.ToShortDateString();
     await next.Invoke();
     Console.WriteLine($"Current date: {date}");
 });
 
-app.Run(async context => await context.Response.WriteAsync($"Date: {date}"));*/
+app.Run(async context => await context.Response.WriteAsync($"Date: {date}"));
+
+app.Run();*/
 
 /*app.Use(async (context, next) =>
 {
@@ -389,7 +392,7 @@ app.Run(async context =>
 
 app.Run();*/
 
-app.Use(async (context, next) =>
+/*app.Use(async (context, next) =>
 {
     Console.WriteLine("First start");
     await next();
@@ -404,8 +407,21 @@ app.Use(async (context, next) =>
 app.Run(async context =>
 {
     Console.WriteLine("Run");
-});
+});*/
  
+// -------- Using delegate RequestDelegate -----
+string date = "";
+
+app.Use(async (context, next) =>
+{
+    date = DateTime.Now.ToShortDateString();    
+    await next.Invoke(context);
+    Console.WriteLine($"Current date: {date}");
+});
+
+app.Run(async context => await context.Response.WriteAsync($"Date: {date}"));
+
+app.Run();
 
 
 
